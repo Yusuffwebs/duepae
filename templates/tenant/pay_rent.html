@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Try to open UPI app
             try {
-                const upiLink = upiButton.getAttribute('href');
+                const upiLink = "{{ upi_link|safe }}";
                 if (upiLink) {
                     window.open(upiLink, '_blank');
                 } else {

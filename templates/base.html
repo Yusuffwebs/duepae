@@ -112,7 +112,7 @@
 
   <!-- Floating "Need help?" Button -->
   <a href="#" class="contact-btn" id="contact-btn">
-    <i class="bi bi-question-circle"></i> Need help?
+    <i class="bi bi-question-circle"></i><span class="contact-btn-text"> Need help?</span>
   </a>
 
   <!-- Bootstrap JS -->
@@ -120,13 +120,16 @@
   <!-- jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <!-- Open Gmail Compose on click -->
   <script>
+    const currentUserFullName = {{ current_user.full_name|tojson if current_user else 'null' }};
+
     document.getElementById('contact-btn').addEventListener('click', function(e) {
       e.preventDefault();
-      const gmailComposeURL =
-        'https://mail.google.com/mail/?view=cm&fs=1'
-        + '&to=contactduepae@gmail.com';
+      const subject = encodeURIComponent("Help Request from duepae User");
+      const body = encodeURIComponent(
+        `Hello,\n\nI need help with the following issue:\n\n[Please describe your issue here]\n\nThanks,\n${currentUserFullName ? currentUserFullName : 'A User'}`
+      );
+      const gmailComposeURL = `https://mail.google.com/mail/?view=cm&fs=1&to=contactduepae@gmail.com&su=${subject}&body=${body}`;
       window.open(gmailComposeURL, '_blank');
     });
   </script>
