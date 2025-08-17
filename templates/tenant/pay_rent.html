@@ -226,18 +226,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (modal) {
-        // Close modal when clicking outside
-        modal.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
+    if (notification) {
+        // Close notification when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!notification.contains(event.target) && event.target !== upiButton) {
+                notification.style.display = 'none';
             }
         });
 
-        // Close modal with Escape key
+        // Close notification with Escape key
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && modal.style.display === 'flex') {
-                modal.style.display = 'none';
+            if (event.key === 'Escape' && notification.style.display === 'block') {
+                notification.style.display = 'none';
             }
         });
     }
