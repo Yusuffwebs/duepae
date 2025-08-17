@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<div class="auth-container">
+    <h1>Register</h1>
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="role">I am a:</label>
+            <select id="role" name="role" required>
+                <option value="owner">Property Owner</option>
+                <option value="tenant">Tenant</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="new_username">Username</label>
+            <input type="text" id="new_username" name="new_username" required>
+        </div>
+        <div class="form-group">
+            <label for="new_password">Password</label>
+            <input type="password" id="new_password" name="new_password" required>
+        </div>
+        <div class="form-group">
+            <label for="new_full_name">Full Name</label>
+            <input type="text" id="new_full_name" name="new_full_name" required>
+        </div>
+        <div class="form-group">
+            <label for="new_phone">Phone Number</label>
+            <input type="tel" id="new_phone" name="new_phone" required>
+        </div>
+        <div class="form-group" id="upi-field" style="display: none;">
+            <label for="new_upi_id">UPI ID</label>
+            <input type="text" id="new_upi_id" name="new_upi_id">
+        </div>
+        <button type="submit" class="btn">Register</button>
+    </form>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+</div>
+
+<script>
+    document.getElementById('role').addEventListener('change', function() {
+        const upiField = document.getElementById('upi-field');
+        if (this.value === 'owner') {
+            upiField.style.display = 'block';
+        } else {
+            upiField.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

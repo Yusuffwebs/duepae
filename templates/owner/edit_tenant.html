@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Tenant{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/owner.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="form-container-wrapper">
+    <div class="card edit-tenant-form">
+        <div class="card-header">
+            <h2><i class="fas fa-edit"></i> Edit Tenant Details</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="tenant_phone"><i class="fas fa-phone"></i> Tenant Phone</label>
+                    <input type="tel" id="tenant_phone" name="tenant_phone" value="{{ tenancy.tenant.phone }}" readonly disabled>
+                    <small>Phone number cannot be changed.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="rent_amount"><i class="fas fa-rupee-sign"></i> Monthly Rent</label>
+                    <input type="number" id="rent_amount" name="rent_amount" step="0.01" value="{{ tenancy.rent_amount }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="due_date"><i class="fas fa-calendar-alt"></i> Rent Due Date</label>
+                    <input type="date" id="due_date" name="due_date" value="{{ tenancy.due_date.strftime('%Y-%m-%d') }}" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                    <a href="{{ url_for('owner_dashboard') }}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Conversation with {{ contact.full_name }}{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4>Conversation with {{ contact.full_name }}</h4>
+        <a href="{{ url_for('messages') }}" class="btn btn-light" style="width: auto;">Back to Messages</a>
+    </div>
+    <div class="card-body" style="height: 60vh; overflow-y: auto;">
+        <div class="d-flex flex-column gap-3">
+            {% for message in messages %}
+            <div class="d-flex {% if message.sender_id == current_user.id %}justify-content-end{% else %}justify-content-start{% endif %}">
+                <div class="message-bubble {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+                    <p class="card-text mb-0">{{ message.content }}</p>
+                    <small class="message-timestamp">{{ to_local_time(message.timestamp).strftime('%H:%M') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card-footer">
+        <form method="POST">
+            <div class="input-group">
+                <input type="text" class="form-control" name="content" placeholder="Type your message..." required>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var cardBody = document.querySelector('.card-body');
+        cardBody.scrollTop = cardBody.scrollHeight;
+    });
+</script>
+{% endblock %}

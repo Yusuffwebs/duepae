@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Payment History{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/owner.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="payments-container">
+    <header class="payments-header">
+        <h1><i class="fas fa-receipt"></i> Payment History</h1>
+        <p>Review all rent payments from your tenants.</p>
+    </header>
+
+    <div class="payments-table-responsive">
+        <table class="payments-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> ID</th>
+                    <th><i class="fas fa-building"></i> Property</th>
+                    <th><i class="fas fa-user"></i> Tenant</th>
+                    <th><i class="fas fa-rupee-sign"></i> Amount</th>
+                    <th><i class="fas fa-calendar-alt"></i> Date</th>
+                    <th><i class="fas fa-info-circle"></i> Status</th>
+                    <th><i class="fas fa-cogs"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if payments %}
+                    {% for payment in payments %}
+                    <tr>
+                        <td data-label="ID">{{ payment.id }}</td>
+                        <td data-label="Property">{{ payment.tenancy.property.name }}</td>
+                        <td data-label="Tenant">{{ payment.tenancy.tenant.full_name }}</td>
+                        <td data-label="Amount">₹{{ payment.amount }}</td>
+                        <td data-label="Date">{{ payment.payment_date.strftime('%d-%m-%Y') }}</td>
+                        <td data-label="Status">
+                            {% if payment.status == 'pending' %}
+                                <span class="badge badge-warning">Pending</span>
+                            {% elif payment.status == 'paid' %}
+                                <span class="badge badge-success">Confirmed</span>
+                            {% elif payment.status == 'rejected' %}
+                                <span class="badge badge-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td data-label="Actions">
+                            <div class="payment-actions-cell">
+                                {% if payment.status == 'pending' %}
+                                    <a href="{{ url_for('owner_confirm_payment', payment_id=payment.id) }}" class="btn btn-sm btn-success"><i class="fas fa-check-circle"></i> Review</a>
+                                {% elif payment.status == 'paid' %}
+                                    <a href="{{ url_for('download_receipt', payment_id=payment.id) }}" class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Download</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="no-data"><i class="fas fa-info-circle"></i> No payment records found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="back-to-dashboard">
+        <a href="{{ url_for('owner_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

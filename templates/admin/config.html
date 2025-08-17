@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}System Configuration{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>System Configuration</h1>
+
+    <form method="POST">
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="require_subscription" {{ 'checked' if config.require_subscription }}>
+                Require Subscription
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Subscription Price (₹)</label>
+            <input type="number" name="subscription_price" value="{{ config.subscription_price }}" step="0.01" min="0">
+        </div>
+
+        <div class="form-group">
+            <label>Subscription Duration (Days)</label>
+            <input type="number" name="subscription_duration" value="{{ config.subscription_duration }}" min="1">
+        </div>
+
+        <button type="submit" class="btn">Save Configuration</button>
+    </form>
+</div>
+{% endblock %}

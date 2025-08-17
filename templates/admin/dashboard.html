@@ -1,0 +1,139 @@
+
+
+{% extends "base.html" %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Manage Users</h1>
+</div>
+
+<div class="table-wrapper">
+    <!-- Card view for smaller screens -->
+    <div class="d-md-none">
+        {% for user in users %}
+        <div class="user-card">
+            <div><strong>ID:</strong> {{ user.id }}</div>
+            <div><strong>Username:</strong> {{ user.username }}</div>
+            <div><strong>Full Name:</strong> {{ user.full_name }}</div>
+            <div><strong>Phone:</strong> {{ user.phone }}</div>
+            <div><strong>Role:</strong> {{ user.role }}</div>
+            <div><strong>Status:</strong>
+                {% if user.is_active %}
+                    <span class="badge bg-success">Active</span>
+                {% else %}
+                    <span class="badge bg-danger">Inactive</span>
+                {% endif %}
+            </div>
+            <div><strong>Subscription:</strong>
+                {% if user.subscription_end %}
+                    {{ user.subscription_end.strftime('%Y-%m-%d') }}
+                {% else %}
+                    None
+                {% endif %}
+            </div>
+            <div class="actions">
+                <a href="{{ url_for('toggle_user', user_id=user.id) }}" class="btn btn-sm btn-warning">
+                    {% if user.is_active %}Deactivate{% else %}Activate{% endif %}
+                </a>
+                <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+                <a href="{{ url_for('grant_subscription', user_id=user.id) }}" class="btn btn-sm btn-info">
+                    Add 30 Days
+                </a>
+                <a href="{{ url_for('admin_change_password', user_id=user.id) }}" class="btn btn-sm btn-secondary">
+                    <i class="bi bi-key-fill"></i> Change Password
+                </a>
+                {% if user.phone %}
+                <button onclick="sendWhatsAppMessage('{{ user.phone }}', '{{ user.full_name }}')" class="btn btn-sm btn-success">
+                    <i class="bi bi-whatsapp"></i> WhatsApp
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Table view for larger screens -->
+    <div class="d-none d-md-block">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Subscription End</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.full_name }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.subscription_end %}
+                            {{ user.subscription_end.strftime('%Y-%m-%d') }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('toggle_user', user_id=user.id) }}" class="btn btn-sm btn-warning">
+                            {% if user.is_active %}Deactivate{% else %}Activate{% endif %}
+                        </a>
+                        <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                        <a href="{{ url_for('grant_subscription', user_id=user.id) }}" class="btn btn-sm btn-info">
+                            Add 30 Days
+                        </a>
+                        <a href="{{ url_for('admin_change_password', user_id=user.id) }}" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-key-fill"></i> Change Password
+                        </a>
+                        {% if user.phone %}
+                        <button onclick="sendWhatsAppMessage('{{ user.phone }}', '{{ user.full_name }}')" class="btn btn-sm btn-success">
+                            <i class="bi bi-whatsapp"></i> WhatsApp
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function sendWhatsAppMessage(phone, name) {
+    const cleanedPhone = phone.replace(/\D/g, '');
+    const message = `Hello ${name}, this is a message from duepae.`;
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${cleanedPhone}?text=${encodedMessage}`, '_blank');
+}
+</script>
+
+{% endblock %}

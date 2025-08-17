@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Tenant Not Found{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Tenant Not Found</h1>
+    <p>The phone number {{ phone }} is not registered in our system.</p>
+    <p>Please ask the tenant to register using this link:</p>
+    <p><a href="{{ registration_url }}">{{ registration_url }}</a></p>
+    <p>Once registered, they will be automatically linked to your property.</p>
+    <a href="{{ url_for('owner_dashboard') }}" class="btn">Back to Dashboard</a>
+</div>
+{% endblock %}

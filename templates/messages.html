@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Messages{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="messages-container">
+    <h1>Messages</h1>
+
+    <div class="conversation-list">
+        {% for conversation in conversations %}
+        <a href="{{ url_for('conversation', contact_id=conversation.contact.id) }}" class="conversation">
+            <div class="contact-info">
+                <h3>{{ conversation.contact.full_name }}</h3>
+                <p>{{ conversation.last_message.content|truncate(50) }}</p>
+                <small>{{ conversation.last_message.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+            </div>
+            {% if conversation.unread_count > 0 %}
+            <span class="unread-badge">{{ conversation.unread_count }}</span>
+            {% endif %}
+        </a>
+        {% else %}
+        <p>No messages yet</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Subscription Required{% endblock %}
+
+{% block content %}
+<div class="subscription-container">
+    <h1>Subscription Required</h1>
+
+    {% if not config.require_subscription %}
+        <div class="alert alert-info">
+            <p>Subscription is not currently required. You can continue using the service.</p>
+            <a href="{{ url_for('home') }}" class="btn">Go to Dashboard</a>
+        </div>
+    {% else %}
+        <div class="subscription-details">
+            <p>To continue using our services, please purchase a subscription:</p>
+
+            <div class="subscription-plan">
+                <h3>Basic Subscription</h3>
+                <p class="price">₹{{ config.subscription_price }} for {{ config.subscription_duration }} days</p>
+
+                <form method="POST" action="{{ url_for('pay_subscription') }}">
+                    <button type="submit" class="btn">Purchase Subscription</button>
+                </form>
+            </div>
+
+            {% if user.role == 'admin' %}
+                <div class="admin-note">
+                    <p>As an admin, you can manage subscriptions in the admin dashboard.</p>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn">Admin Dashboard</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

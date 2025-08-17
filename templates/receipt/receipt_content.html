@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rent Receipt</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 15px; /* Reduced padding */
+            line-height: 1.5; /* Slightly reduced line height */
+            background-color: #f8f8f8;
+        }
+
+        .container {
+            max-width: 580px; /* Slightly reduced max-width */
+            margin: 15px auto; /* Reduced margin */
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px; /* Slightly reduced border-radius */
+            padding: 25px; /* Reduced padding */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Softer shadow */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px; /* Reduced margin */
+            padding-bottom: 15px; /* Reduced padding */
+            border-bottom: 2px solid #4CAF50; /* Premium green accent */
+        }
+
+        .header h1 {
+            font-size: 28px; /* Reduced font size */
+            font-weight: 800;
+            color: #2c3e50;
+            margin: 0;
+            letter-spacing: 1px; /* Slightly reduced letter spacing */
+            text-transform: uppercase;
+        }
+
+        .receipt-meta {
+            width: 100%;
+            overflow: hidden;
+            margin-top: 10px; /* Reduced margin */
+            font-size: 13px; /* Reduced font size */
+            color: #666;
+        }
+
+        .receipt-meta div {
+            width: 49%;
+            float: left;
+            box-sizing: border-box;
+        }
+
+        .receipt-meta div:last-child {
+            float: right;
+            text-align: right;
+        }
+
+        .receipt-meta div span {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .section-title {
+            font-size: 16px; /* Reduced font size */
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 20px; /* Reduced margin */
+            margin-bottom: 10px; /* Reduced margin */
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .address-block {
+            margin-bottom: 15px; /* Reduced margin */
+            font-size: 13px; /* Reduced font size */
+            line-height: 1.6; /* Reduced line height */
+        }
+
+        .address-block strong {
+            display: block;
+            font-size: 15px; /* Reduced font size */
+            color: #333;
+            margin-bottom: 3px; /* Reduced margin */
+        }
+
+        .payment-details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; /* Reduced margin */
+        }
+
+        .payment-details th, .payment-details td {
+            padding: 8px 10px; /* Reduced padding */
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .payment-details th {
+            background-color: #f2f2f2;
+            color: #555;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px; /* Reduced font size */
+        }
+
+        .payment-details td {
+            font-size: 13px; /* Reduced font size */
+            color: #333;
+        }
+
+        .payment-details .amount-cell {
+            text-align: right;
+            font-weight: 700;
+            color: #4CAF50;
+            font-size: 15px; /* Reduced font size */
+        }
+
+        .total-section {
+            width: 100%;
+            overflow: hidden;
+            margin-top: 20px; /* Reduced margin */
+            padding-top: 15px; /* Reduced padding */
+            border-top: 2px solid #4CAF50;
+        }
+
+        .total-section .label {
+            font-size: 18px; /* Reduced font size */
+            font-weight: 700;
+            color: #2c3e50;
+            float: left;
+        }
+
+        .total-section .value {
+            font-size: 26px; /* Reduced font size */
+            font-weight: 800;
+            color: #4CAF50;
+            float: right;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px; /* Reduced margin */
+            padding-top: 15px; /* Reduced padding */
+            border-top: 1px solid #eee;
+            font-size: 11px; /* Reduced font size */
+            color: #888;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 60px; /* Reduced font size */
+            color: rgba(0, 0, 0, 0.05);
+            text-transform: uppercase;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: -1;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="watermark">PAID RECEIPT</div>
+
+        <div class="header">
+            <h1>RENT RECEIPT</h1>
+            <div class="receipt-meta">
+                <div>Receipt #<span>{{ payment.id }}</span></div>
+                <div>Date: <span>{{ date.strftime('%d %b %Y') }}</span></div>
+            </div>
+            <div style="clear: both;"></div> <!-- Clear floats -->
+        </div>
+
+        <div class="section-title">Bill To</div>
+        <div class="address-block">
+            <strong>{{ tenant.full_name }}</strong>
+            {% if tenant.phone %}{{ tenant.phone }}<br>{% endif %}
+            {% if tenant.email %}{{ tenant.email }}<br>{% endif %} {# Assuming email might be available #}
+            {{ property.name }}<br>
+            {{ property.address or 'N/A' }}
+        </div>
+
+        <div class="section-title">Bill From</div>
+        <div class="address-block">
+            <strong>{{ owner.full_name }}</strong>
+            {% if owner.phone %}{{ owner.phone }}<br>{% endif %}
+            {% if owner.email %}{{ owner.email }}<br>{% endif %} {# Assuming email might be available #}
+            {% if owner.upi_id %}UPI ID: {{ owner.upi_id }}<br>{% endif %}
+        </div>
+
+        <div class="section-title">Payment Details</div>
+        <table class="payment-details">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Period</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Rent Payment</td>
+                    <td>{{ payment.payment_date.strftime('%B %Y') }}</td>
+                    <td class="amount-cell">₹{{ "%.2f"|format(payment.amount) }}</td>
+                </tr>
+                {% if payment.notes %}
+                <tr>
+                    <td colspan="3">Notes: {{ payment.notes }}</td>
+                </tr>
+                {% endif %}
+                {% if payment.upi_txn_id %}
+                <tr>
+                    <td colspan="3">Transaction ID: {{ payment.upi_txn_id }}</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <span class="label">TOTAL PAID</span>
+            <span class="value">₹{{ "%.2f"|format(payment.amount) }}</span>
+            <div style="clear: both;"></div> <!-- Clear floats -->
+        </div>
+
+        <div class="footer">
+            Thank you for your payment!<br>
+            This is a computer-generated receipt.
+        </div>
+    </div>
+        </div>
+
+        <div class="section-title">Bill To</div>
+        <div class="address-block">
+            <strong>{{ tenant.full_name }}</strong>
+            {% if tenant.phone %}{{ tenant.phone }}<br>{% endif %}
+            {% if tenant.email %}{{ tenant.email }}<br>{% endif %} {# Assuming email might be available #}
+            {{ property.name }}<br>
+            {{ property.address or 'N/A' }}
+        </div>
+
+        <div class="section-title">Bill From</div>
+        <div class="address-block">
+            <strong>{{ owner.full_name }}</strong>
+            {% if owner.phone %}{{ owner.phone }}<br>{% endif %}
+            {% if owner.email %}{{ owner.email }}<br>{% endif %} {# Assuming email might be available #}
+            {% if owner.upi_id %}UPI ID: {{ owner.upi_id }}<br>{% endif %}
+        </div>
+
+        <div class="section-title">Payment Details</div>
+        <table class="payment-details">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Period</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Rent Payment</td>
+                    <td>{{ payment.payment_date.strftime('%B %Y') }}</td>
+                    <td class="amount-cell">₹{{ "%.2f"|format(payment.amount) }}</td>
+                </tr>
+                {% if payment.notes %}
+                <tr>
+                    <td colspan="3">Notes: {{ payment.notes }}</td>
+                </tr>
+                {% endif %}
+                {% if payment.upi_txn_id %}
+                <tr>
+                    <td colspan="3">Transaction ID: {{ payment.upi_txn_id }}</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <span class="label">TOTAL PAID</span>
+            <span class="value">₹{{ "%.2f"|format(payment.amount) }}</span>
+        </div>
+
+        <div class="footer">
+            Thank you for your payment!<br>
+            This is a computer-generated receipt.
+        </div>
+    </div>
+</body>
+</html>

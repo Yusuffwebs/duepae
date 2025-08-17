@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Owner Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/owner.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Welcome, {{ current_user.full_name }}!</h1>
+        <p>Here's a summary of your properties and payments.</p>
+    </header>
+
+    <div class="dashboard-grid">
+        <!-- UPI Section -->
+        <section class="card upi-section">
+            <div class="card-header">
+                <h2><i class="fas fa-wallet"></i> Your UPI ID</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('update_upi') }}" class="form-inline">
+                    <input type="text" name="upi_id" value="{{ current_user.upi_id or '' }}" placeholder="Enter your UPI ID" required>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="card quick-actions">
+            <div class="card-header">
+                <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('add_tenant') }}" class="btn btn-primary"><i class="fas fa-user-plus"></i> Add New Tenant</a>
+                <a href="{{ url_for('view_tenants') }}" class="btn btn-secondary"><i class="fas fa-users"></i> View All Tenants</a>
+                <a href="{{ url_for('view_payments') }}" class="btn btn-info"><i class="fas fa-history"></i> All Payments</a>
+            </div>
+        </section>
+
+        <!-- Pending Payments Section -->
+        <section class="card pending-payments-section">
+            <div class="card-header">
+                <h2><i class="fas fa-clock"></i> Pending Confirmations</h2>
+            </div>
+            <div class="card-body">
+                {% if pending_payments %}
+                <div class="payment-list">
+                    {% for payment_info in pending_payments %}
+                    <div class="payment-item">
+                        <div class="item-details">
+                            <strong>{{ payment_info.tenant.full_name }}</strong> - {{ payment_info.property.name }}
+                            <span>Amount: ₹{{ payment_info.payment.amount }}</span>
+                        </div>
+                        <a href="{{ url_for('owner_confirm_payment', payment_id=payment_info.payment.id) }}" class="btn btn-sm btn-success">Review</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="no-data"><i class="fas fa-check-circle"></i> No pending payments.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Properties Section -->
+        <section class="card properties-section">
+            <div class="card-header">
+                <h2><i class="fas fa-building"></i> Your Properties</h2>
+            </div>
+            <div class="card-body">
+                {% if properties %}
+                <div class="property-list">
+                    {% for property in properties %}
+                    <div class="property-item">
+                        <h3>{{ property.name }}</h3>
+                        <ul class="tenant-list">
+                            {% for tenancy in property.tenancies %}
+                            <li>
+                                <span><i class="fas fa-user"></i> {{ tenancy.tenant.full_name }}</span>
+                                
+                            </li>
+                            {% else %}
+                            <li class="no-data">No tenants for this property.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="no-data"><i class="fas fa-plus-circle"></i> You haven't added any properties yet.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

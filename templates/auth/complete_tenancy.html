@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Tenancy Setup{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Complete Tenancy Setup</h1>
+    <p>You're being added as a tenant for:</p>
+    <div class="tenancy-details">
+        <p><strong>Property:</strong> {{ property_name }}</p>
+        <p><strong>Rent Amount:</strong> ₹{{ rent_amount }}</p>
+        <p><strong>Due Date:</strong> {{ due_date }}</p>
+        <p><strong>Owner:</strong> {{ owner_name }}</p>
+    </div>
+
+    <form method="POST">
+        <button type="submit" class="btn">Confirm Tenancy</button>
+    </form>
+</div>
+{% endblock %}

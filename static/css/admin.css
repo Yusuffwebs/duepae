@@ -1,0 +1,207 @@
+
+/* Variables - Rely on style.css for global variables */
+
+body {
+  font-family: 'Poppins', sans-serif; /* Use Poppins for consistency with login page */
+  background-color: #f8f9fa; /* Lighter background */
+  color: var(--text-dark);
+  /* Removed padding: 1rem; to allow padding-top from style.css to work */
+}
+
+h1 {
+  font-size: 2rem; /* Slightly larger heading */
+  color: var(--brand-blue);
+  margin-bottom: 1.5rem; /* More space below heading */
+  font-weight: 600; /* Bolder heading */
+}
+
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Reduced gap for a tighter look */
+}
+
+.user-card {
+  background: #fff;
+  border-radius: 10px; /* Slightly more rounded corners */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* More prominent shadow */
+  padding: 1.5rem; /* Increased padding */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Increased gap within card */
+  border: 1px solid #e0e0e0; /* Subtle border */
+}
+
+.user-card div strong {
+  color: #555; /* Slightly darker label text */
+}
+
+.user-card .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem; /* Further increased gap between buttons */
+  margin-top: 1rem; /* More space above actions */
+}
+
+/* Improved Badge Styling */
+.badge {
+  padding: 0.4em 0.7em; /* Larger padding */
+  border-radius: 50px; /* Pill shape */
+  font-size: 0.8rem; /* Slightly larger font */
+  font-weight: 600; /* Bolder text */
+  text-transform: uppercase; /* Uppercase text */
+  letter-spacing: 0.5px; /* Letter spacing */
+}
+
+.bg-success { background-color: var(--brand-green); } /* Use variable */
+.bg-danger { background-color: #dc3545; } /* Keep specific red */
+
+/* General Button Styling */
+.btn {
+  padding: 0.6rem 1rem; /* Larger buttons */
+  font-size: 0.9rem; /* Larger font size */
+  border: none;
+  cursor: pointer;
+  border-radius: 8px; /* More rounded buttons */
+  text-decoration: none;
+  display: inline-flex; /* Use flex for icon alignment */
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease; /* Smooth transitions */
+}
+
+.btn i {
+  margin-right: 0.3rem; /* Space between icon and text */
+}
+
+.btn-sm { font-size: 0.8rem; padding: 0.5rem 0.8rem; } /* Adjusted small buttons */
+
+/* Specific Button Colors - Use variables where possible */
+.btn-warning { background-color: #ffc107; color: #333; } /* Keep specific yellow, darker text */
+.btn-danger { background-color: #dc3545; color: #fff; }
+.btn-info { background-color: #17a2b8; color: #fff; }
+.btn-secondary { background-color: #6c757d; color: #fff; }
+.btn-success { background-color: var(--brand-green); color: #fff; } /* Use variable */
+
+@media (min-width: 768px) {
+  /* Hide card view on larger screens */
+  .table-wrapper .d-md-none {
+    display: none !important;
+  }
+
+  /* Show table view on larger screens */
+  .table-wrapper .d-none.d-md-block {
+    display: block !important;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    border-radius: 10px; /* Rounded table corners */
+    overflow: hidden; /* Ensures rounded corners apply to content */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Shadow for table */
+  }
+
+  .table th, .table td {
+    padding: 1rem; /* Increased padding for table cells */
+    text-align: left;
+    border-bottom: 1px solid #eee; /* Lighter border */
+  }
+
+  .table td .btn {
+    margin-right: 0.5rem; /* Add space between buttons in table cells */
+    margin-bottom: 0.5rem; /* Add space below buttons in table cells for wrapping */
+  }
+
+  .table thead {
+    background-color: var(--brand-blue); /* Use brand blue for header */
+    color: #fff;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+}
+
+/* Form container (if used in admin pages) */
+.card {
+  border: none;
+  border-radius: 10px; /* Consistent rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Consistent shadow */
+  background-color: #fff;
+}
+
+.card-header {
+  background-color: var(--brand-blue); /* Use brand blue */
+  color: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 1.2rem; /* Increased padding */
+}
+
+.card-header h4 {
+  margin: 0;
+  font-size: 1.3rem; /* Slightly larger font */
+  font-weight: 600; /* Bolder */
+}
+
+/* Form controls */
+.form-control {
+  border: 1px solid #ccc;
+  border-radius: 8px; /* Consistent rounded corners */
+  padding: 0.75rem; /* Increased padding */
+  font-size: 1rem; /* Larger font */
+}
+
+.form-label {
+  font-weight: 600; /* Bolder label */
+  margin-bottom: 0.4rem; /* More space below label */
+  color: #333; /* Darker label color */
+}
+
+/* Buttons (general for forms) */
+.btn-primary {
+  background-color: var(--brand-blue);
+  border: none;
+  color: #fff;
+  border-radius: 8px; /* Consistent rounded corners */
+  padding: 0.75rem 1.2rem; /* Increased padding */
+  font-size: 1rem; /* Larger font */
+}
+
+.btn-primary:hover {
+  background-color: #1565C0;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 8px; /* Consistent rounded corners */
+  padding: 0.75rem 1.2rem; /* Increased padding */
+  font-size: 1rem; /* Larger font */
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.75rem; /* Adjust heading for small screens */
+  }
+  .card-header h4 {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    width: auto; /* Allow buttons to size naturally */
+    margin-top: 0; /* Remove top margin */
+  }
+
+  .d-md-flex {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

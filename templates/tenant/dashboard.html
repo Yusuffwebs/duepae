@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Tenant Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tenant.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome, {{ current_user.full_name }}</h1>
+
+    <section class="tenancies-section">
+        <h2>Your Current Rentals</h2>
+
+        <div class="tenancy-list">
+            {% if tenancies %}
+                {% for tenancy in tenancies %}
+                <div class="tenancy-card">
+                    <h3>{{ tenancy.property.name }}</h3>
+                    <p><strong>Property Address:</strong> {{ tenancy.property.address }}</p>
+                    <p><strong>Monthly Rent:</strong> ₹{{ tenancy.rent_amount }}</p>
+                    <p><strong>Next Due Date:</strong> {{ tenancy.due_date.strftime('%d %b %Y') }}</p>
+                    <p><strong>Property Owner:</strong> {{ tenancy.owner_user.full_name }}</p>
+
+                    <div class="actions">
+                        <a href="{{ url_for('pay_rent', tenancy_id=tenancy.id) }}" class="btn btn-sm btn-primary">Pay Rent</a>
+                        <a href="{{ url_for('tenant_payment_history', tenancy_id=tenancy.id) }}" class="btn btn-sm btn-outline-secondary">View Payment History</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>You currently have no active rentals.</p>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Send WhatsApp Message to {{ tenant.full_name }}</h2>
+    <p>Phone: {{ tenant.phone }}</p>
+
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea name="message" class="form-control" rows="5" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fab fa-whatsapp"></i> Send Message
+        </button>
+        <a href="{{ url_for('view_tenants') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

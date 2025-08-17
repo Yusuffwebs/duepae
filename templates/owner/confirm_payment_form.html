@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Payment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/owner.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="form-container-wrapper">
+    <div class="card confirm-payment-form">
+        <div class="card-header">
+            <h2><i class="fas fa-check-circle"></i> Confirm Payment</h2>
+        </div>
+        <div class="card-body">
+            <div class="payment-summary">
+                <p><strong><i class="fas fa-building"></i> Property:</strong> {{ tenancy.property.name }}</p>
+                <p><strong><i class="fas fa-user"></i> Tenant:</strong> {{ tenancy.tenant.full_name }}</p>
+                <p><strong><i class="fas fa-rupee-sign"></i> Amount:</strong> ₹{{ tenancy.rent_amount }}</p>
+                <p><strong><i class="fas fa-calendar-alt"></i> Date:</strong> {{ payment.payment_date.strftime('%Y-%m-%d') }}</p>
+                {% if payment.upi_txn_id %}
+                    <p><strong><i class="fas fa-hashtag"></i> UPI TXN ID:</strong> {{ payment.upi_txn_id }}</p>
+                {% endif %}
+                {% if payment.notes %}
+                    <p><strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ payment.notes }}</p>
+                {% endif %}
+            </div>
+
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="action"><i class="fas fa-hand-point-right"></i> Action:</label>
+                    <select name="action" id="action" required>
+                        <option value="">Select action</option>
+                        <option value="confirm">Confirm Payment</option>
+                        <option value="reject">Reject Payment</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="reason-group" style="display:none;">
+                    <label for="reason"><i class="fas fa-comment-alt"></i> Reason for rejection:</label>
+                    <textarea name="reason" id="reason"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit</button>
+                    <a href="{{ url_for('view_payments') }}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelector('select[name="action"]').addEventListener('change', function() {
+    const reasonGroup = document.getElementById('reason-group');
+    reasonGroup.style.display = this.value === 'reject' ? 'block' : 'none';
+});
+</script>
+{% endblock %}

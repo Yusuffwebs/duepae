@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if payment.status == 'paid' %}
+        <div class="alert alert-success">
+            <h2>Payment Confirmed Successfully</h2>
+            <p>The tenant has been notified about this payment confirmation.</p>
+        </div>
+    {% elif payment.status == 'rejected' %}
+        <div class="alert alert-danger">
+            <h2>Payment Rejected</h2>
+            <p>The tenant has been notified about this payment rejection.</p>
+        </div>
+    {% endif %}
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ tenancy.property.name }}</h5>
+            <p class="card-text">
+                Tenant: {{ tenancy.tenant.full_name }}<br>
+                Phone: {{ tenancy.tenant.phone }}<br>
+                Amount: ₹{{ payment.amount }}<br>
+                Date: {{ payment.payment_date.strftime('%Y-%m-%d') }}<br>
+                Status: <span class="badge badge-{% if payment.status == 'paid' %}success{% elif payment.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                    {{ payment.status|upper }}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <!-- WhatsApp Actions -->
+    <div class="whatsapp-actions mb-4">
+        {% if payment.status == 'paid' %}
+            <button onclick="sendWhatsAppMessage('{{ tenancy.tenant.phone }}', 'payment_success', '{{ payment.id }}')"
+                    class="btn btn-success">
+                <i class="fab fa-whatsapp"></i> Send Payment Confirmation
+            </button>
+        {% elif payment.status == 'rejected' %}
+            <div class="btn-group" role="group">
+                <button onclick="sendWhatsAppMessage('{{ tenancy.tenant.phone }}', 'payment_reminder')"
+                        class="btn btn-warning">
+                    <i class="fab fa-whatsapp"></i> Send Payment Reminder
+                </button>
+                <button onclick="sendWhatsAppMessage('{{ tenancy.tenant.phone }}', 'payment_not_credited')"
+                        class="btn btn-danger">
+                    <i class="fab fa-whatsapp"></i> Money Not Credited
+                </button>
+            </div>
+            <p class="text-muted mt-2">
+                <small>Use "Payment Reminder" to remind about due payment. Use "Money Not Credited" if payment was made but not received.</small>
+            </p>
+        {% endif %}
+    </div>
+
+    <div id="desktop-warning" class="alert alert-info" style="display:none;">
+        On desktop, WhatsApp Web will open in a new tab. Make sure you're logged in to WhatsApp Web.
+    </div>
+
+    <div>
+        <a href="{{ url_for('view_payments') }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Payments
+        </a>
+        {% if payment.status == 'paid' %}
+            <a href="{{ url_for('download_receipt', payment_id=payment.id) }}" class="btn btn-secondary ml-2">
+                <i class="fas fa-download"></i> Download Receipt
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Show desktop warning if needed
+if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    document.getElementById('desktop-warning').style.display = 'block';
+}
+
+function sendWhatsAppMessage(phone, messageType, paymentId = null) {
+    let message = '';
+
+    if (messageType === 'payment_success') {
+        message = `✅ Payment confirmed for {{ tenancy.property.name }}.\n` +
+                  `Amount: ₹{{ payment.amount }}\n` +
+                  `Date: {{ payment.payment_date.strftime('%Y-%m-%d') }}\n` +
+                  `Thank you for your payment!`;
+    } else if (messageType === 'payment_reminder') {
+        message = `🔔 Payment reminder for {{ tenancy.property.name }}.\n` +
+                  `Amount due: ₹{{ tenancy.rent_amount }}\n` +
+                  `Due date: {{ tenancy.due_date.strftime('%Y-%m-%d') }}\n` +
+                  `Please make the payment at your earliest convenience.`;
+    } else if (messageType === 'payment_not_credited') {
+        message = `❌ Payment not received for {{ tenancy.property.name }}.\n` +
+                  `Amount: ₹{{ payment.amount }}\n` +
+                  `Date: {{ payment.payment_date.strftime('%Y-%m-%d') }}\n` +
+                  `We haven't received this payment in our account. Please check your transaction or contact your bank.`;
+    }
+
+    // Encode the message for URL
+    const encodedMessage = encodeURIComponent(message);
+
+    // Check if mobile or desktop
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // Mobile - use WhatsApp app
+        window.open(`whatsapp://send?phone=${phone}&text=${encodedMessage}`);
+    } else {
+        // Desktop - use WhatsApp Web
+        window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`);
+    }
+}
+</script>
+{% endblock %}

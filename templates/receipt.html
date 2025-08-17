@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rent Receipt</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 100%; max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .receipt-title { font-size: 28px; font-weight: bold; }
+        .details { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details th, .details td { padding: 10px; border: 1px solid #ddd; }
+        .details th { background-color: #f5f5f5; text-align: left; }
+        .footer { margin-top: 50px; text-align: right; }
+        .signature { border-top: 1px solid #000; width: 300px; margin-left: auto; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="receipt-title">RENT RECEIPT</div>
+            <div>Receipt No: #{{ payment.id }}</div>
+            <div>Date: {{ datetime.now().strftime('%d %B, %Y') }}</div>
+        </div>
+
+        <table class="details">
+            <tr>
+                <th>Property</th>
+                <td>{{ tenancy.property.name }}</td>
+            </tr>
+            <tr>
+                <th>Property</th>
+                <td>{{ tenancy.property.address }}</td>
+            </tr>
+
+            <tr>
+                <th>Landlord</th>
+                <td>{{ tenancy.owner_user.full_name }}</td>
+            </tr>
+            <tr>
+                <th>Tenant</th>
+                <td>{{ tenancy.tenant.full_name }}</td>
+            </tr>
+            <tr>
+                <th>Payment Date</th>
+                <td>{{ payment.payment_date.strftime('%d %B, %Y') }}</td>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td>₹{{ payment.amount }}</td>
+            </tr>
+            <tr>
+                <th>Payment Mode</th>
+                <td>UPI ({{ payment.upi_txn_id }})</td>
+            </tr>
+            <tr>
+                <th>Period Covered</th>
+                <td>{{ payment.payment_date.strftime('%B %Y') }}</td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            <p>Received with thanks,</p>
+            <div class="signature"></div>
+            <p>Landlord Signature</p>
+        </div>
+    </div>
+</body>
+</html>

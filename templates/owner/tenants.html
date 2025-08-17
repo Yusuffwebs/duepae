@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}My Tenants{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/owner.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="tenants-container">
+    <header class="tenants-header">
+        <h1><i class="fas fa-users"></i> My Tenants</h1>
+        <p>Manage your registered and unregistered tenants.</p>
+    </header>
+
+    <div class="tenants-grid">
+        <!-- Registered Tenants Section -->
+        <section class="card registered-tenants-section">
+            <div class="card-header">
+                <h2>Registered Tenants</h2>
+            </div>
+            <div class="card-body">
+                {% if registered_tenancies %}
+                <div class="tenant-list-cards">
+                    {% for tenancy in registered_tenancies %}
+                    <div class="tenant-card">
+                        <div class="tenant-info">
+                            <h3>{{ tenancy.tenant.full_name }}</h3>
+                            <p><i class="fas fa-phone"></i> {{ tenancy.tenant.phone }}</p>
+                            <p><i class="fas fa-building"></i> {{ tenancy.property.name }}</p>
+                            <p><i class="fas fa-rupee-sign"></i> {{ tenancy.rent_amount }} due on {{ tenancy.due_date.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                        <div class="tenant-actions">
+                            <button onclick="sendWhatsAppMessage(this, '{{ tenancy.tenant.phone }}', 'payment_reminder', '{{ tenancy.id }}', '{{ tenancy.property.name }}', '{{ tenancy.rent_amount }}', '{{ tenancy.due_date.strftime('%Y-%m-%d') }}', '{{ tenancy.tenant.full_name }}')"
+                                    class="btn btn-sm btn-warning"
+                                    title="Send Payment Reminder">
+                                <i class="fab fa-whatsapp"></i> Remind
+                            </button>
+                            <button onclick="sendWhatsAppMessage(this, '{{ tenancy.tenant.phone }}', 'payment_success', '{{ tenancy.id }}', '{{ tenancy.property.name }}', '{{ tenancy.rent_amount }}', '{{ tenancy.due_date.strftime('%Y-%m-%d') }}', '{{ tenancy.tenant.full_name }}')"
+                                    class="btn btn-sm btn-success"
+                                    title="Send Payment Confirmation">
+                                <i class="fab fa-whatsapp"></i> Confirm
+                            </button>
+                            <a href="{{ url_for('edit_tenant', tenancy_id=tenancy.id) }}" class="btn btn-sm btn-info" title="Edit Tenancy"><i class="fas fa-edit"></i> Edit</a>
+                            <form method="POST" action="{{ url_for('delete_tenant', tenancy_id=tenancy.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" title="Remove Tenant"><i class="fas fa-trash-alt"></i> Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="no-data"><i class="fas fa-info-circle"></i> No registered tenants found.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Unregistered Tenants Section -->
+        <section class="card unregistered-tenants-section">
+            <div class="card-header">
+                <h2>Pending Registration</h2>
+            </div>
+            <div class="card-body">
+                {% if unregistered_tenancies %}
+                <div class="tenant-list-cards">
+                    {% for tenancy in unregistered_tenancies %}
+                    <div class="tenant-card">
+                        <div class="tenant-info">
+                            <h3>Unregistered Tenant</h3>
+                            <p><i class="fas fa-phone"></i> {{ tenancy.tenant.phone }}</p>
+                            <p><i class="fas fa-building"></i> {{ tenancy.property.name }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ tenancy.property.address }}</p>
+                            <p><i class="fas fa-rupee-sign"></i> {{ tenancy.rent_amount }} due on {{ tenancy.due_date.strftime('%Y-%m-%d') }}</p>
+                            <p><span class="badge badge-warning"><i class="fas fa-hourglass-half"></i> Pending</span></p>
+                        </div>
+                        <div class="tenant-actions">
+                            <button onclick="sendWhatsAppMessage(this, '{{ tenancy.tenant.phone }}', 'payment_reminder', '{{ tenancy.id }}', '{{ tenancy.property.name }}', '{{ tenancy.rent_amount }}', '{{ tenancy.due_date.strftime('%Y-%m-%d') }}', '')"
+                                    class="btn btn-sm btn-warning"
+                                    title="Send Payment Reminder">
+                                <i class="fab fa-whatsapp"></i> Remind
+                            </button>
+                            <button onclick="sendWhatsAppMessage(this, '{{ tenancy.tenant.phone }}', 'payment_success', '{{ tenancy.id }}', '{{ tenancy.property.name }}', '{{ tenancy.rent_amount }}', '{{ tenancy.due_date.strftime('%Y-%m-%d') }}', '')"
+                                    class="btn btn-sm btn-success"
+                                    title="Send Payment Confirmation">
+                                <i class="fab fa-whatsapp"></i> Confirm
+                            </button>
+                            <button onclick="sendInviteMessage(this, '{{ tenancy.tenant.phone }}', '{{ tenancy.id }}', '{{ tenancy.property.name }}', '{{ current_user.full_name }}')"
+                                    class="btn btn-sm btn-primary"
+                                    title="Send Invitation">
+                                <i class="fas fa-paper-plane"></i> Invite
+                            </button>
+                            <form method="POST" action="{{ url_for('delete_tenant', tenancy_id=tenancy.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" title="Remove Tenant"><i class="fas fa-trash-alt"></i> Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="no-data"><i class="fas fa-info-circle"></i> No pending registrations.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <div class="back-to-dashboard">
+        <a href="{{ url_for('owner_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/owner_tenants.js') }}"></script>
+{% endblock %}
